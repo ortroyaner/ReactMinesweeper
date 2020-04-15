@@ -1,4 +1,10 @@
-import { SET_TOTAL_ROWS, SET_TOTAL_COLS, SET_TOTAL_MINES } from "../types";
+import {
+  SET_TOTAL_ROWS,
+  SET_TOTAL_COLS,
+  SET_TOTAL_MINES,
+  SET_BOARD_TIMESTAMP,
+  SET_IS_REVEAL_MODE,
+} from "../types";
 
 export default (state, action) => {
   switch (action.type) {
@@ -17,5 +23,17 @@ export default (state, action) => {
         ...state,
         totalMines: action.payload,
       };
+    case SET_BOARD_TIMESTAMP:
+      return {
+        ...state,
+        boardTimestamp: action.payload,
+      };
+    case SET_IS_REVEAL_MODE:
+      return {
+        ...state,
+        isRevealMode: action.payload,
+      };
+    default:
+      return;
   }
 };

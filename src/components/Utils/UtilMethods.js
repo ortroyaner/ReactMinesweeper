@@ -1,9 +1,5 @@
 export const createBoard = (totalRows, totalCols, totalMines) => {
   let board = [];
-  console.log(
-    `createBoard (utils)! Building new board: ${totalRows}X${totalCols} with ${totalMines} mines.`
-  );
-
   // Init board cells
   for (let i = 0; i < totalRows; i++) {
     board.push([]);
@@ -15,6 +11,7 @@ export const createBoard = (totalRows, totalCols, totalMines) => {
         isMine: false,
         isFlagged: false,
         isLostTrigger: false,
+        missedMark: false,
         mineNeighbours: 0,
       });
     }

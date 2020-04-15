@@ -10,13 +10,10 @@ const GameInfoForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (totalRows === "") {
-      //alertContext.setAlert('Please enter something', 'light');
-    } else {
-      gameInfoContext.setTotalRows(parseInt(totalRows));
-      gameInfoContext.setTotalCols(parseInt(totalCols));
-      gameInfoContext.setTotalMines(parseInt(totalMines));
-    }
+    gameInfoContext.setTotalRows(parseInt(totalRows));
+    gameInfoContext.setTotalCols(parseInt(totalCols));
+    gameInfoContext.setTotalMines(parseInt(totalMines));
+    gameInfoContext.setBoardTimestamp(new Date().getTime());
   };
 
   const onChangeRows = (e) => setTotalRows(e.target.value);
@@ -24,47 +21,78 @@ const GameInfoForm = () => {
   const onChangeMines = (e) => setTotalMines(e.target.value);
 
   return (
-    <form onSubmit={onSubmit} className='form-inline mt-2 mt-md-0'>
-      <div className='form-row col-sm-10 ml-auto'>
-        <div className='form-group col-sm-3'>
-          <label htmlFor='totalRowsInput' className='text-light mr-2'>
-            Rows:
-          </label>
-          <input
-            id='totalRowsInput'
-            className='form-control mr-sm-2 col-sm-5'
-            type='number'
-            value={totalRows}
-            onChange={onChangeRows}
-          />
+    <form onSubmit={onSubmit}>
+      <div className='row'>
+        <div className='col-md-8 col-centered mx-auto'>
+          <div className='row'>
+            <div className='col-md-3'>
+              <div className='input-group mb-1'>
+                <div className='input-group-prepend'>
+                  <span className='input-group-text'>
+                    <i className='fa fa-align-justify' aria-hidden='true' />
+                  </span>
+                </div>
+                <input
+                  id='totalRowsInput'
+                  className='form-control'
+                  type='number'
+                  min='1'
+                  max='300'
+                  value={totalRows}
+                  onChange={onChangeRows}
+                  aria-label='Rows'
+                />
+              </div>
+            </div>
+            <div className='col-md-3'>
+              <div className='input-group mb-1'>
+                <div className='input-group-prepend'>
+                  <span className='input-group-text'>
+                    <i
+                      className='fa fa-align-justify fa-rotate-90'
+                      aria-hidden='true'
+                    />
+                  </span>
+                </div>
+                <input
+                  id='totalColsInput'
+                  className='form-control'
+                  type='number'
+                  min='1'
+                  max='300'
+                  value={totalCols}
+                  onChange={onChangeCols}
+                  aria-label='Cols'
+                />
+              </div>
+            </div>
+
+            <div className='col-md-3'>
+              <div className='input-group mb-1'>
+                <div className='input-group-prepend'>
+                  <span className='input-group-text'>
+                    <i className='fa fa-bomb' aria-hidden='true' />
+                  </span>
+                </div>
+                <input
+                  id='totalMinesInput'
+                  className='form-control'
+                  type='number'
+                  min='1'
+                  max={totalRows * totalCols}
+                  value={totalMines}
+                  onChange={onChangeMines}
+                  aria-label='Mines'
+                />
+              </div>
+            </div>
+            <div className='col-md-3 mb-1'>
+              <button className='btn btn-success btn-block' type='submit'>
+                New Game
+              </button>
+            </div>
+          </div>
         </div>
-        <div className='form-group col-sm-3'>
-          <label htmlFor='totalColsInput' className='text-light mr-2'>
-            Columns:
-          </label>
-          <input
-            id='totalColsInput'
-            className='form-control mr-sm-2 col-sm-5'
-            type='number'
-            value={totalCols}
-            onChange={onChangeCols}
-          />
-        </div>
-        <div className='form-group col-sm-3'>
-          <label htmlFor='totalMinesInput' className='text-light mr-2'>
-            Mines:
-          </label>
-          <input
-            id='totalMinesInput'
-            className='form-control mr-sm-2 col-sm-5'
-            type='number'
-            value={totalMines}
-            onChange={onChangeMines}
-          />
-        </div>
-        <button className='btn btn-success my-2 my-sm-0 mr-3' type='submit'>
-          New Game
-        </button>
       </div>
     </form>
   );

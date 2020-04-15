@@ -1,11 +1,10 @@
 import React from "react";
-import GameInfoForm from "../../GameInfoForm/GameInfoForm";
-// import { Link } from "react-router-dom";
+import RevealMode from "../../RevealMode/RevealMode";
 
 const Navbar = () => {
   return (
     <nav className='navbar navbar-expand-md navbar-dark bg-dark'>
-      <a className='navbar-brand' href='#'>
+      <a className='navbar-brand' href='/#'>
         <i className='fa fa-bomb' /> ReactJS Minesweeper
       </a>
       <button
@@ -20,10 +19,7 @@ const Navbar = () => {
         <span className='navbar-toggler-icon'></span>
       </button>
       <div className='navbar-collapse collapse' id='navbarCollapse'>
-        <GameInfoForm />
-        <button className='btn btn-outline-success my-2 my-sm-0' type='submit'>
-          <i className='fa fa-eye' /> Reveal All Cells
-        </button>
+        <RevealMode />
       </div>
     </nav>
   );

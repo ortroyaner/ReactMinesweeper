@@ -2,5 +2,8 @@
   display: inline-grid;
   justify-content: center;
   overflow-x: scroll;
-  border: 1px #fff solid;
+}
+
+body {
+  background-color: #1b1b1b;
 }

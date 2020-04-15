@@ -1,10 +1,4 @@
-import React, {
-  Profiler,
-  useState,
-  useEffect,
-  useContext,
-  Fragment,
-} from "react";
+import React, { useState, useEffect, useContext, Fragment } from "react";
 import GameInfoContext from "../../context/GameInfo/GameInfoContext";
 import Cell from "../Cell/Cell";
 import "./GameBoard.css";
@@ -15,51 +9,61 @@ import Alert from "../Alert/Alert";
 
 const GameBoard = () => {
   const gameInfoContext = useContext(GameInfoContext);
-  const { totalRows, totalCols, totalMines } = gameInfoContext;
-
+  const { totalRows, totalCols, totalMines, boardTimestamp } = gameInfoContext;
   const [board, setBoard] = useState([]);
   const [gameFreeze, setGameFreeze] = useState(false);
-
   const [remainingFlags, setRemainingFlags] = useState(totalMines);
   const [numberOfCorrectFlags, setNumberOfCorrectFlags] = useState(0);
 
-  const resetGame = () => {
-    setBoard(createBoard(totalRows, totalCols, totalMines));
-    setRemainingFlags(totalMines);
-    setGameFreeze(false);
-    setAlert(null);
-  };
-  useEffect(() => resetGame(), [totalRows, totalCols, totalMines]);
+  useEffect(() => {
+    // Reset Game
+    (() => {
+      setBoard(createBoard(totalRows, totalCols, totalMines));
+      setRemainingFlags(totalMines);
+      setNumberOfCorrectFlags(0);
+      setGameFreeze(false);
+      setAlert(null);
+    })();
+  }, [totalRows, totalCols, totalMines, boardTimestamp]);
 
-  let totalCells = 300;
-  let cellWithAndHeight;
-
-  if (totalCells < 10000) {
-    cellWithAndHeight = 70;
-  } else if (totalCells < 20000) {
-    cellWithAndHeight = 45;
-  } else {
-    cellWithAndHeight = 30;
-  }
+  // Check if it's a win
+  useEffect(() => {
+    if (numberOfCorrectFlags === totalMines) {
+      triggerAlert(
+        "Well Done!",
+        <span>
+          You did it!
+          <i className='fa fa-trophy ml-1' />
+        </span>,
+        "success"
+      );
+      setGameFreeze(true);
+    }
+  }, [numberOfCorrectFlags, totalMines]);
 
   const revealAllMines = () => {
     let updatedBoard = [...board];
     return updatedBoard.map((row) =>
       row.map((cell) => {
-        if (cell.isMine && cell.isFlagged) {
-          return cell;
-        } else {
+        if (
+          (cell.isMine && !cell.isFlagged) ||
+          (cell.isFlagged && !cell.isMine)
+        ) {
           return {
             ...cell,
             isRevealed: true,
+            missedMark: true,
           };
+        } else {
+          return cell;
         }
       })
     );
   };
 
   const clickHandler = (event, cellRow, cellCol) => {
-    if (gameFreeze) {
+    const currentCell = board[cellRow][cellCol];
+    if (gameFreeze || currentCell.isRevealed) {
       return;
     }
     // Handle Shift + Click
@@ -67,8 +71,10 @@ const GameBoard = () => {
       toggleFlag(cellRow, cellCol);
       return;
     }
-    // If Cell Is a Mine
-    const currentCell = board[cellRow][cellCol];
+    // Handle Click Only
+    if (currentCell.isFlagged) {
+      return;
+    }
     if (currentCell.isMine) {
       triggerAlert(
         "Oy Vey!",
@@ -83,26 +89,10 @@ const GameBoard = () => {
       setGameFreeze(true);
       return;
     }
-    // Reveal Cell
     if (!currentCell.isFlagged) {
       revealCell(cellRow, cellCol);
     }
   };
-
-  useEffect(() => {
-    // Check if it's a win
-    if (numberOfCorrectFlags === totalMines) {
-      triggerAlert(
-        "Well Done!",
-        <span>
-          You did it!
-          <i className='fa fa-trophy ml-1' />
-        </span>,
-        "success"
-      );
-      setGameFreeze(true);
-    }
-  }, [numberOfCorrectFlags]);
 
   const toggleFlag = (row, col) => {
     let updatedBoard = [...board];
@@ -133,6 +123,7 @@ const GameBoard = () => {
         return;
       }
     }
+    // Toggle flag indication
     updatedBoard[row][col].isFlagged = !updatedBoard[row][col].isFlagged;
     setBoard(updatedBoard);
   };
@@ -142,12 +133,12 @@ const GameBoard = () => {
     let currentCell = updatedBoard[originCellRow][originCellCol];
     currentCell.isRevealed = true;
     if (currentCell.mineNeighbours === 0) {
-      updatedBoard = spreadCell(updatedBoard, currentCell);
+      updatedBoard = revealNeighbours(updatedBoard, currentCell);
     }
     setBoard(updatedBoard);
   };
 
-  const spreadCell = (updatedBoard, originCell) => {
+  const revealNeighbours = (updatedBoard, originCell) => {
     const originRow = originCell.cellRow;
     const originCol = originCell.cellCol;
     for (let xOffSet = -1; xOffSet <= 1; xOffSet++) {
@@ -181,6 +172,7 @@ const GameBoard = () => {
             isRevealed={cell.isRevealed}
             isFlagged={cell.isFlagged}
             isLostTrigger={cell.isLostTrigger}
+            missedMark={cell.missedMark}
             clickHandler={clickHandler}
           />
         </div>
