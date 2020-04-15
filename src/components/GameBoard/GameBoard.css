@@ -1,0 +1,6 @@
+.game-board {
+  display: inline-grid;
+  justify-content: center;
+  overflow-x: scroll;
+  border: 1px #fff solid;
+}

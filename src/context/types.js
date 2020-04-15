@@ -1,0 +1,3 @@
+export const SET_TOTAL_ROWS = "SET_TOTAL_ROWS";
+export const SET_TOTAL_COLS = "SET_TOTAL_COLS";
+export const SET_TOTAL_MINES = "SET_TOTAL_MINES";

@@ -1,0 +1,23 @@
+.game-board-container {
+  overflow-x: scroll;
+  width: 100%;
+  line-height: 1em;
+}
+
+.game-board-container::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.game-board-container::-webkit-scrollbar:vertical {
+  width: 11px;
+}
+
+.game-board-container::-webkit-scrollbar:horizontal {
+  height: 11px;
+}
+
+.game-board-container::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 2px solid white; /* should match background, can't be transparent */
+  background-color: rgba(0, 0, 0, 0.5);
+}
