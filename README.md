@@ -15,7 +15,7 @@ To open a square, point at the square and click on it. To flag a square you thin
 * Configurable number of rows, columns and mines.
 * Responsiveness: you can also play on tablets and mobile devices!
 * Secret mode to reveal all cells without clicking it.
-* Game state persistency if you accidentally refresh the page
+* Game state persistency if you accidentally refresh the page.
 
 ### Live Demo
 
