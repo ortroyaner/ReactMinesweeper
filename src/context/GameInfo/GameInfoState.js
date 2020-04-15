@@ -13,6 +13,18 @@ import {
   DEFAULT_TOTAL_COLS,
   DEFAULT_TOTAL_MINES,
 } from "../../components/Utils/GameConstans";
+import {
+  getTotalRowsFromDS,
+  getTotalColsFromDS,
+  getTotalMinesFromDS,
+  getBoardTimestampFromDS,
+  getIsRevealModeFromDS,
+  setTotalRowsToDS,
+  setTotalColsToDS,
+  setTotalMinesToDS,
+  setBoardTimestampToDS,
+  setIsRevealModeToDS,
+} from "../../components/Utils/DataStorage";
 // import GameInfoForm from "../../components/GameInfoForm";
 
 const GameInfoState = (props) => {
@@ -27,47 +39,48 @@ const GameInfoState = (props) => {
   const [state, dispatch] = useReducer(GameInfoReducer, initialState);
 
   const getTotalRows = () => {
-    let localStorageInfo = parseInt(localStorage.getItem("totalRows"));
-    return localStorageInfo ? localStorageInfo : state.totalRows;
+    const totalRows = getTotalRowsFromDS();
+    return totalRows ? totalRows : state.totalRows;
   };
 
   const getTotalCols = () => {
-    let localStorageInfo = parseInt(localStorage.getItem("totalCols"));
-    return localStorageInfo ? localStorageInfo : state.totalCols;
+    const totalCols = getTotalColsFromDS();
+    return totalCols ? totalCols : state.totalCols;
   };
 
   const getTotalMines = () => {
-    let localStorageInfo = parseInt(localStorage.getItem("totalMines"));
-    return localStorageInfo ? localStorageInfo : state.totalMines;
+    const totalMines = getTotalMinesFromDS();
+    return totalMines ? totalMines : state.totalMines;
   };
 
   const getBoardTimestamp = () => {
-    let localStorageInfo = localStorage.getItem("boardTimestamp");
-    return localStorageInfo ? localStorageInfo : state.boardTimestamp;
+    const boardTimestamp = getBoardTimestampFromDS();
+    return boardTimestamp ? boardTimestamp : state.boardTimestamp;
   };
+
   const getIsRevealMode = () => {
-    let localStorageInfo = localStorage.getItem("isRevealMode") === "true";
-    return localStorageInfo ? localStorageInfo : state.isRevealMode;
+    const isRevealMode = getIsRevealModeFromDS();
+    return isRevealMode ? isRevealMode : state.isRevealMode;
   };
 
   const setTotalRows = (newTotalRows) => {
-    localStorage.setItem("totalRows", newTotalRows);
+    setTotalRowsToDS(newTotalRows);
     dispatch({ type: SET_TOTAL_ROWS, payload: newTotalRows });
   };
   const setTotalCols = (newTotalCols) => {
-    localStorage.setItem("totalCols", newTotalCols);
+    setTotalColsToDS(newTotalCols);
     dispatch({ type: SET_TOTAL_COLS, payload: newTotalCols });
   };
   const setTotalMines = (newTotalMines) => {
-    localStorage.setItem("totalMines", newTotalMines);
+    setTotalMinesToDS(newTotalMines);
     dispatch({ type: SET_TOTAL_MINES, payload: newTotalMines });
   };
   const setBoardTimestamp = (newTimestamp) => {
-    localStorage.setItem("boardTimestamp", newTimestamp);
+    setBoardTimestampToDS(newTimestamp);
     dispatch({ type: SET_BOARD_TIMESTAMP, payload: newTimestamp });
   };
   const setIsRevealMode = (newIsRevealMode) => {
-    localStorage.setItem("isRevealMode", newIsRevealMode);
+    setIsRevealModeToDS(newIsRevealMode);
     dispatch({ type: SET_IS_REVEAL_MODE, payload: newIsRevealMode });
   };
 
