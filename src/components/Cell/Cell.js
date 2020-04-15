@@ -14,6 +14,7 @@ const Cell = ({
   isLostTrigger,
   missedMark,
   clickHandler,
+  touchHandler,
 }) => {
   const renderCell = () => {
     if (isMine) {
@@ -37,7 +38,17 @@ const Cell = ({
   };
 
   const gameInfoContext = useContext(GameInfoContext);
-  const isRevealMode = gameInfoContext.isRevealMode;
+  const isRevealMode = gameInfoContext.getIsRevealMode();
+
+  let touchHoldTimer = null;
+  const handleTochStart = (cellRow, cellCol) => {
+    touchHoldTimer = setTimeout(() => {
+      touchHandler(true, cellRow, cellCol);
+    }, 500);
+  };
+  const handleTochEnd = () => {
+    clearTimeout(touchHoldTimer);
+  };
 
   return (
     <div
@@ -49,12 +60,13 @@ const Cell = ({
     >
       <span>{renderCell()}</span>
       <button
-        className='btn btn-warning game-btn'
+        className='btn btn-warning game-btn d-block'
         onClick={(e) => clickHandler(e, cellRow, cellCol)}
+        onTouchStart={() => handleTochStart(cellRow, cellCol)}
+        onTouchEnd={handleTochEnd}
         style={{
           opacity: isRevealed ? 0 : isRevealMode ? 0.5 : 1,
           cursor: isRevealed ? "auto" : "pointer",
-          display: "block",
         }}
       >
         {isFlagged ? <i className='fa fa-flag' /> : null}
@@ -73,6 +85,7 @@ Cell.propTypes = {
   isLostTrigger: PropTypes.bool,
   missedMark: PropTypes.bool,
   clickHandler: PropTypes.func,
+  touchHandler: PropTypes.func,
 };
 
 export default Cell;

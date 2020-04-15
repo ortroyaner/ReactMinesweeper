@@ -4,15 +4,16 @@ import GameInfoContext from "../../context/GameInfo/GameInfoContext";
 const GameInfoForm = () => {
   const gameInfoContext = useContext(GameInfoContext);
 
-  const [totalRows, setTotalRows] = useState(gameInfoContext.totalRows);
-  const [totalCols, setTotalCols] = useState(gameInfoContext.totalCols);
-  const [totalMines, setTotalMines] = useState(gameInfoContext.totalMines);
+  const [totalRows, setTotalRows] = useState(gameInfoContext.getTotalRows());
+  const [totalCols, setTotalCols] = useState(gameInfoContext.getTotalCols());
+  const [totalMines, setTotalMines] = useState(gameInfoContext.getTotalMines());
 
   const onSubmit = (e) => {
     e.preventDefault();
     gameInfoContext.setTotalRows(parseInt(totalRows));
     gameInfoContext.setTotalCols(parseInt(totalCols));
     gameInfoContext.setTotalMines(parseInt(totalMines));
+    localStorage.removeItem("board");
     gameInfoContext.setBoardTimestamp(new Date().getTime());
   };
 

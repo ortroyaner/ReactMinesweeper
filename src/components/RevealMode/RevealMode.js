@@ -3,7 +3,7 @@ import GameInfoContext from "../../context/GameInfo/GameInfoContext";
 
 const RevealMode = () => {
   const gameInfoContext = useContext(GameInfoContext);
-  const isRevealMode = gameInfoContext.isRevealMode;
+  const isRevealMode = gameInfoContext.getIsRevealMode();
   const toggleRevealMode = () => {
     gameInfoContext.setIsRevealMode(!isRevealMode);
   };

@@ -6,7 +6,7 @@ const Alert = ({ alert }) => {
     alert !== null && (
       <div className='bs-component'>
         <div className={`alert alert-${alert.type}`}>
-          <strong>{alert.header}</strong> {alert.msg}
+          <strong>{alert.header}</strong> {alert.content}
         </div>
       </div>
     )

@@ -1,45 +1,108 @@
-import React, { useState, useEffect, useContext, Fragment } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  Fragment,
+  useCallback,
+} from "react";
 import GameInfoContext from "../../context/GameInfo/GameInfoContext";
 import Cell from "../Cell/Cell";
 import "./GameBoard.css";
-import { CELL_SIZE } from "../Utils/GameConstans";
+import {
+  CELL_SIZE,
+  SUCCESS_MESSAGE,
+  MINE_MESSAGE,
+  FLAG_MESSAGE,
+} from "../Utils/GameConstans";
 import { createBoard } from "../Utils/UtilMethods";
 import FlagCounter from "../FlagCounter/FlagCouner";
 import Alert from "../Alert/Alert";
+import {
+  getGameFreezeFromDS,
+  getRemainingFlagsFromDS,
+  getNumberOfCorrectFlagsFromDS,
+  setGameFreezeToDS,
+  setRemainingFlagsToDS,
+  setNumberOfCorrectFlagsToDS,
+} from "../Utils/DataStorage";
 
 const GameBoard = () => {
   const gameInfoContext = useContext(GameInfoContext);
-  const { totalRows, totalCols, totalMines, boardTimestamp } = gameInfoContext;
-  const [board, setBoard] = useState([]);
-  const [gameFreeze, setGameFreeze] = useState(false);
-  const [remainingFlags, setRemainingFlags] = useState(totalMines);
-  const [numberOfCorrectFlags, setNumberOfCorrectFlags] = useState(0);
+  const totalRows = gameInfoContext.getTotalRows();
+  const totalCols = gameInfoContext.getTotalCols();
+  const totalMines = gameInfoContext.getTotalMines();
+  const boardTimestamp = gameInfoContext.getBoardTimestamp();
+
+  const getLocalStorageBoard = () => JSON.parse(localStorage.getItem("board"));
+
+  const [board, setBoard] = useState(getLocalStorageBoard);
+  const [gameFreeze, setGameFreeze] = useState(getGameFreezeFromDS() || false);
+  const [remainingFlags, setRemainingFlags] = useState(
+    getRemainingFlagsFromDS() || totalMines
+  );
+  const [numberOfCorrectFlags, setNumberOfCorrectFlags] = useState(
+    getNumberOfCorrectFlagsFromDS() || 0
+  );
+
+  const storeAndSetGameFreeze = (newValue) => {
+    setGameFreezeToDS(newValue);
+    setGameFreeze(newValue);
+  };
+
+  const storeAndSetRemainingFlags = (newValue) => {
+    setRemainingFlagsToDS(newValue);
+    setRemainingFlags(newValue);
+  };
+
+  const storeAndSetNumberOfCorrectFlags = (newValue) => {
+    setNumberOfCorrectFlagsToDS(newValue);
+    setNumberOfCorrectFlags(newValue);
+  };
+
+  const [alert, setAlert] = useState(null);
+  const triggerAlert = useCallback((alert) => {
+    setAlert(alert);
+    if (alert && alert.timeout > 0) {
+      setTimeout(() => setAlert(null), alert.timeout);
+    }
+  }, []);
 
   useEffect(() => {
-    // Reset Game
     (() => {
-      setBoard(createBoard(totalRows, totalCols, totalMines));
-      setRemainingFlags(totalMines);
-      setNumberOfCorrectFlags(0);
-      setGameFreeze(false);
-      setAlert(null);
+      //Reset board
+      if (!getLocalStorageBoard()) {
+        setBoard(createBoard(totalRows, totalCols, totalMines));
+        storeAndSetNumberOfCorrectFlags(0);
+        storeAndSetRemainingFlags(totalMines);
+        storeAndSetGameFreeze(false);
+        setAlert(null);
+      }
     })();
   }, [totalRows, totalCols, totalMines, boardTimestamp]);
 
-  // Check if it's a win
   useEffect(() => {
-    if (numberOfCorrectFlags === totalMines) {
-      triggerAlert(
-        "Well Done!",
-        <span>
-          You did it!
-          <i className='fa fa-trophy ml-1' />
-        </span>,
-        "success"
-      );
-      setGameFreeze(true);
-    }
-  }, [numberOfCorrectFlags, totalMines]);
+    localStorage.setItem("board", JSON.stringify(board));
+  }, [board]);
+
+  const checkForWin = useCallback(
+    (numberOfCorrectFlags, totalMines) => {
+      if (numberOfCorrectFlags === totalMines) {
+        triggerAlert(SUCCESS_MESSAGE);
+        storeAndSetGameFreeze(true);
+      } else {
+        triggerAlert(null);
+        storeAndSetGameFreeze(false);
+      }
+    },
+    [triggerAlert]
+  );
+
+  useEffect(() => checkForWin(numberOfCorrectFlags, totalMines), [
+    numberOfCorrectFlags,
+    totalMines,
+    triggerAlert,
+    checkForWin,
+  ]);
 
   const revealAllMines = () => {
     let updatedBoard = [...board];
@@ -62,31 +125,26 @@ const GameBoard = () => {
   };
 
   const clickHandler = (event, cellRow, cellCol) => {
+    updateBoardAfterInteraction(event.shiftKey, cellRow, cellCol);
+  };
+
+  const updateBoardAfterInteraction = (isFlagChange, cellRow, cellCol) => {
     const currentCell = board[cellRow][cellCol];
     if (gameFreeze || currentCell.isRevealed) {
       return;
     }
-    // Handle Shift + Click
-    if (event.shiftKey) {
+    if (isFlagChange) {
       toggleFlag(cellRow, cellCol);
       return;
     }
-    // Handle Click Only
     if (currentCell.isFlagged) {
       return;
     }
     if (currentCell.isMine) {
-      triggerAlert(
-        "Oy Vey!",
-        <span>
-          It's a mine
-          <i className='fa fa-bomb ml-1' />
-        </span>,
-        "danger"
-      );
+      triggerAlert(MINE_MESSAGE);
       currentCell.isLostTrigger = true;
       setBoard(revealAllMines());
-      setGameFreeze(true);
+      storeAndSetGameFreeze(true);
       return;
     }
     if (!currentCell.isFlagged) {
@@ -95,47 +153,46 @@ const GameBoard = () => {
   };
 
   const toggleFlag = (row, col) => {
+    const removeFlag = (remainingFlags, isMine, numberOfCorrectFlags) => {
+      storeAndSetRemainingFlags(remainingFlags + 1);
+      if (isMine) {
+        storeAndSetNumberOfCorrectFlags(numberOfCorrectFlags - 1);
+      }
+    };
+    const setNewFlag = (remainingFlags, isMine, numberOfCorrectFlags) => {
+      storeAndSetRemainingFlags(remainingFlags - 1);
+      if (currentCell.isMine) {
+        storeAndSetNumberOfCorrectFlags(numberOfCorrectFlags + 1);
+      }
+    };
     let updatedBoard = [...board];
     const currentCell = updatedBoard[row][col];
     if (currentCell.isFlagged) {
-      // Remove Flag
-      setRemainingFlags(remainingFlags + 1);
-      if (currentCell.isMine) {
-        setNumberOfCorrectFlags(numberOfCorrectFlags - 1);
-      }
+      removeFlag(remainingFlags, currentCell.isMine, numberOfCorrectFlags);
     } else {
-      // Set New Flag
       if (remainingFlags > 0) {
-        setRemainingFlags(remainingFlags - 1);
-        if (currentCell.isMine) {
-          setNumberOfCorrectFlags(numberOfCorrectFlags + 1);
-        }
+        setNewFlag(remainingFlags, currentCell.isMine, numberOfCorrectFlags);
       } else {
-        triggerAlert(
-          "Out Of Flags!",
-          <span>
-            Try to remove a flag before adding a new one
-            <i className='fa fa-flag ml-1' />
-          </span>,
-          "secondary",
-          5000
-        );
+        triggerAlert(FLAG_MESSAGE);
         return;
       }
     }
-    // Toggle flag indication
     updatedBoard[row][col].isFlagged = !updatedBoard[row][col].isFlagged;
     setBoard(updatedBoard);
   };
 
   const revealCell = (originCellRow, originCellCol) => {
     let updatedBoard = [...board];
+    updatedBoard = revealCellAux(updatedBoard, originCellRow, originCellCol);
+    setBoard(updatedBoard);
+  };
+  const revealCellAux = (updatedBoard, originCellRow, originCellCol) => {
     let currentCell = updatedBoard[originCellRow][originCellCol];
     currentCell.isRevealed = true;
     if (currentCell.mineNeighbours === 0) {
       updatedBoard = revealNeighbours(updatedBoard, currentCell);
     }
-    setBoard(updatedBoard);
+    return updatedBoard;
   };
 
   const revealNeighbours = (updatedBoard, originCell) => {
@@ -153,7 +210,7 @@ const GameBoard = () => {
           !cellToCheck.isMine &&
           !cellToCheck.isFlagged
         ) {
-          revealCell(cellToCheck.cellRow, cellToCheck.cellCol);
+          revealCellAux(updatedBoard, cellToCheck.cellRow, cellToCheck.cellCol);
         }
       }
     }
@@ -161,6 +218,7 @@ const GameBoard = () => {
   };
 
   const renderBoard = () =>
+    board &&
     board.map((row, i) =>
       row.map((cell, j) => (
         <div key={`${i},${j}`}>
@@ -174,22 +232,11 @@ const GameBoard = () => {
             isLostTrigger={cell.isLostTrigger}
             missedMark={cell.missedMark}
             clickHandler={clickHandler}
+            touchHandler={updateBoardAfterInteraction}
           />
         </div>
       ))
     );
-
-  const [alert, setAlert] = useState(null);
-  const triggerAlert = (header, msg, type, timeout) => {
-    setAlert({
-      header,
-      msg,
-      type,
-    });
-    if (timeout > 0) {
-      setTimeout(() => setAlert(null), timeout);
-    }
-  };
 
   return (
     <Fragment>

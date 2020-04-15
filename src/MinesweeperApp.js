@@ -4,6 +4,7 @@ import GameBoard from "./components/GameBoard/GameBoard";
 import GameInfoState from "./context/GameInfo/GameInfoState";
 import "./MinesweeperApp.css";
 import GameInfoForm from "./components/GameInfoForm/GameInfoForm";
+import HowToPlay from "./components/layout/HowToPlay/HowToPlay";
 
 const MinesweeperApp = () => {
   return (
@@ -18,6 +19,7 @@ const MinesweeperApp = () => {
             <GameBoard />
           </div>
         </div>
+        <HowToPlay />
       </div>
     </GameInfoState>
   );

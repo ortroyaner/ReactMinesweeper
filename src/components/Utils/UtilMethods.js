@@ -1,6 +1,4 @@
-export const createBoard = (totalRows, totalCols, totalMines) => {
-  let board = [];
-  // Init board cells
+const initBoardCells = (board, totalRows, totalCols, totalMines) => {
   for (let i = 0; i < totalRows; i++) {
     board.push([]);
     for (let j = 0; j < totalCols; j++) {
@@ -16,21 +14,10 @@ export const createBoard = (totalRows, totalCols, totalMines) => {
       });
     }
   }
+};
 
-  // Set mines
-  let mineCounter = 0;
-  while (mineCounter < totalMines) {
-    const randomRow = Math.floor(Math.random() * totalRows);
-    const randomCol = Math.floor(Math.random() * totalCols);
-    const cell = board[randomRow][randomCol];
-    if (!cell.isMine) {
-      board[randomRow][randomCol] = {
-        ...cell,
-        isMine: true,
-      };
-      mineCounter++;
-    }
-
+const setMines = (board, totalRows, totalCols, totalMines) => {
+  const setNeighboursMines = (board) => {
     const countNeighboursMines = (row, col) => {
       if (board[row][col].isMine) {
         return -1;
@@ -50,7 +37,6 @@ export const createBoard = (totalRows, totalCols, totalMines) => {
       return totalNeighboursMines;
     };
 
-    // Set neightbours mines values
     board.map((row, i) =>
       row.map(
         (_, j) =>
@@ -60,6 +46,26 @@ export const createBoard = (totalRows, totalCols, totalMines) => {
           })
       )
     );
+  };
+  let mineCounter = 0;
+  while (mineCounter < totalMines) {
+    const randomRow = Math.floor(Math.random() * totalRows);
+    const randomCol = Math.floor(Math.random() * totalCols);
+    const cell = board[randomRow][randomCol];
+    if (!cell.isMine) {
+      board[randomRow][randomCol] = {
+        ...cell,
+        isMine: true,
+      };
+      mineCounter++;
+    }
+    setNeighboursMines(board);
   }
+};
+
+export const createBoard = (totalRows, totalCols, totalMines) => {
+  let board = [];
+  initBoardCells(board, totalRows, totalCols, totalMines);
+  setMines(board, totalRows, totalCols, totalMines);
   return board;
 };
