@@ -7,7 +7,7 @@ export const DEFAULT_TOTAL_MINES = 10;
 export const CELL_SIZE = 30;
 
 export const SUCCESS_MESSAGE = {
-  header: "Mazal Tov!",
+  header: "Well Done!",
   content: (
     <span>
       You did it!

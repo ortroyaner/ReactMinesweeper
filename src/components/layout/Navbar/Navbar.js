@@ -4,7 +4,7 @@ import RevealMode from "../../RevealMode/RevealMode";
 const Navbar = () => {
   return (
     <nav className='navbar navbar-expand-md navbar-dark bg-dark'>
-      <a className='navbar-brand' href='/#'>
+      <a className='navbar-brand' onClick={(e) => e.preventDefault()} href='/#'>
         <i className='fa fa-bomb' /> ReactJS Minesweeper
       </a>
       <button

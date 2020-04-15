@@ -15,3 +15,7 @@ export const setRemainingFlagsToDS = (newValue) =>
 
 export const setNumberOfCorrectFlagsToDS = (newValue) =>
   localStorage.setItem("numberOfCorrectFlags", newValue);
+
+export const clearDS = () => {
+  localStorage.clear();
+};
