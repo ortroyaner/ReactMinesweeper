@@ -4,7 +4,9 @@ The old, good popular windows game gets online and now in React!
 
 ![demoGif](https://im.ezgif.com/tmp/ezgif-1-33232b31bc6c.gif)
 
-## How to Play
+### About the Game
+
+### How to Play
 
 You are presented with a board of squares. Some squares contain mines (bombs), others don't. If you click on a square containing a bomb, you lose. If you manage to flag all the mines (without clicking on any bombs) you win.
 Clicking a square which doesn't have a bomb reveals the number of neighbouring squares containing bombs. Use this information plus some guess work to avoid the bombs.
