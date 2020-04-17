@@ -2,7 +2,7 @@
 
 The old, good popular windows game gets online and now in React! 
 
-![demoGif](https://im.ezgif.com/tmp/ezgif-1-33232b31bc6c.gif)
+![demoGif](https://user-images.githubusercontent.com/9674645/79592447-aeb0ad80-80e2-11ea-9f8a-71a6ea7411b1.gif)
 
 ### About the Game
 
