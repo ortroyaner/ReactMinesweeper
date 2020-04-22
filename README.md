@@ -4,7 +4,13 @@ The old, good popular windows game gets online and now in React!
 
 ![demoGif](https://user-images.githubusercontent.com/9674645/79592447-aeb0ad80-80e2-11ea-9f8a-71a6ea7411b1.gif)
 
-### About the Game
+## Live Demo
+
+You can start playing right now from here:
+
+[https://ortroyaner.github.io/reactMinesweeper/](https://ortroyaner.github.io/reactMinesweeper/)
+
+## About the Game
 
 ### How to Play
 
@@ -18,12 +24,6 @@ To open a square, point at the square and click on it. To flag a square you thin
 * Responsiveness: you can also play on tablets and mobile devices!
 * Secret mode to reveal all cells without clicking it.
 * Game state persistency if you accidentally refresh the page.
-
-### Live Demo
-
-You can start playing right now from here:
-
-[https://ortroyaner.github.io/reactMinesweeper/](https://ortroyaner.github.io/reactMinesweeper/)
 
 ## License
 
