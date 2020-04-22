@@ -128,6 +128,17 @@ const GameBoard = () => {
     updateBoardAfterInteraction(event.shiftKey, cellRow, cellCol);
   };
 
+  const rightClickHandler = (event, cellRow, cellCol) => {
+    event.preventDefault && event.preventDefault();
+    event.stopPropagation && event.stopPropagation();
+    updateBoardAfterInteraction(true, cellRow, cellCol);
+    return false;
+  };
+
+  const longTouchHandler = (cellRow, cellCol) => {
+    updateBoardAfterInteraction(true, cellRow, cellCol);
+  };
+
   const updateBoardAfterInteraction = (isFlagChange, cellRow, cellCol) => {
     const currentCell = board[cellRow][cellCol];
     if (gameFreeze || currentCell.isRevealed) {
@@ -232,7 +243,8 @@ const GameBoard = () => {
             isLostTrigger={cell.isLostTrigger}
             missedMark={cell.missedMark}
             clickHandler={clickHandler}
-            touchHandler={updateBoardAfterInteraction}
+            rightClickHandler={rightClickHandler}
+            touchHandler={longTouchHandler}
           />
         </div>
       ))

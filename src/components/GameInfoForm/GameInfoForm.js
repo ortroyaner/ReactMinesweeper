@@ -38,7 +38,7 @@ const GameInfoForm = () => {
                   className='form-control'
                   type='number'
                   min='1'
-                  max='300'
+                  max='50'
                   value={totalRows}
                   onChange={onChangeRows}
                   aria-label='Rows'
@@ -60,7 +60,7 @@ const GameInfoForm = () => {
                   className='form-control'
                   type='number'
                   min='1'
-                  max='300'
+                  max='50'
                   value={totalCols}
                   onChange={onChangeCols}
                   aria-label='Cols'

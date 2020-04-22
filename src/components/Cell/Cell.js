@@ -14,6 +14,7 @@ const Cell = ({
   isLostTrigger,
   missedMark,
   clickHandler,
+  rightClickHandler,
   touchHandler,
 }) => {
   const renderCell = () => {
@@ -43,7 +44,7 @@ const Cell = ({
   let touchHoldTimer = null;
   const handleTochStart = (cellRow, cellCol) => {
     touchHoldTimer = setTimeout(() => {
-      touchHandler(true, cellRow, cellCol);
+      touchHandler(cellRow, cellCol);
     }, 500);
   };
   const handleTochEnd = () => {
@@ -62,6 +63,7 @@ const Cell = ({
       <button
         className='btn btn-warning game-btn d-block'
         onClick={(e) => clickHandler(e, cellRow, cellCol)}
+        onContextMenu={(e) => rightClickHandler(e, cellRow, cellCol)}
         onTouchStart={() => handleTochStart(cellRow, cellCol)}
         onTouchEnd={handleTochEnd}
         style={{
