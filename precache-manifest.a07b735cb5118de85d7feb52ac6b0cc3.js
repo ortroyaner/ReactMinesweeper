@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "678415a97eadeceb131c8230ca864679",
+    "revision": "2269082fa00b0429074f47c688d61ec8",
     "url": "/reactMinesweeper/index.html"
   },
   {
