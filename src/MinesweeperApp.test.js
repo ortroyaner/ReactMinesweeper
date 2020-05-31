@@ -5,8 +5,12 @@ import MinesweeperApp from './MinesweeperApp';
 
 Enzyme.configure({ adapter: new EnzymeAdapter() });
 
+const setup = (props = {}, state = null) => shallow(<MinesweeperApp {...props} />);
+
+const findByTestAttr = (wrapper, val) => wrapper.find(`[data-test="${val}"]`);
+
 test('renders without error', () => {
-    const wrapper = shallow(<MinesweeperApp />);
-    const appComponent = wrapper.find("[data-test='component-minesweeper-app']")
-    expect(appComponent.length).toBe(1);
+    const wrapper = setup();
+    const minesweeperAppComponent = findByTestAttr(wrapper, 'component-minesweeper-app')
+    expect(minesweeperAppComponent.length).toBe(1);
 })
