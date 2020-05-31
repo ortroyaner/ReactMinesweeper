@@ -38,7 +38,7 @@ const MinesweeperApp = () => {
   return (
     <ErrorBoundary>
       <GameInfoState>
-        <div className='minesweeperApp'>
+        <div className='minesweeperApp' data-test="component-minesweeper-app">
           <Navbar />
           <div className='container mt-3'>
             <GameInfoForm />
